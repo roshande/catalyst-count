@@ -33,7 +33,6 @@ DEBUG = env('DEBUG')
 
 
 # SECURITY WARNING: keep the secret key used in production secret!
-#SECRET_KEY = 'django-insecure-7+c_j_!bn=k2bt)n&hld8xdhf66gnp-z#wz7&rl#7(v1^nsznf'
 # Raises django's ImproperlyConfigured exception if SECRET_KEY not in os.environ
 SECRET_KEY = env('SECRET_KEY')
 
@@ -49,6 +48,11 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django.contrib.sites',
+    'bootstrapform',
+    'allauth',
+    'allauth.account',
+    'allauth.socialaccount',
 ]
 
 MIDDLEWARE = [
@@ -66,7 +70,7 @@ ROOT_URLCONF = 'catalyst_count.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [ BASE_DIR / 'templates'],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -81,6 +85,7 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'catalyst_count.wsgi.application'
 
+SITE_ID=1
 
 # Database
 # https://docs.djangoproject.com/en/3.2/ref/settings/#databases
@@ -89,20 +94,7 @@ WSGI_APPLICATION = 'catalyst_count.wsgi.application'
 DATABASES = {
     # read os.environ['DATABASE_URL'] and raises ImproperlyConfigured exception if not found
     'default': env.db(),
-    # read os.environ['SQLITE_URL']
-    #'extra': env.db('SQLITE_URL', default='sqlite:////tmp/my-tmp-sqlite.db')
 }
-
-#DATABASES = {
-#    'default': {
-#        'ENGINE': 'django.db.backends.postgresql',
-#        'NAME': 'ccdb',
-#        'USER': 'ccuser',
-#        'PASSWORD': 'cc_user_password',
-#        'HOST': 'localhost',
-#        'PORT': 5432
-#    }
-#}
 
 
 # Password validation
@@ -147,3 +139,6 @@ STATIC_URL = '/static/'
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+LOGIN_REFIRECT_URL = 'home'
+LOGOUT_REDIRECT_URL = 'home'
