@@ -1,0 +1,23 @@
+{% extends "account/base.html" %}
+
+{% load i18n %}
+
+{% block head_title %}{% trans "Query Builder" %}{% endblock %}
+
+{% block extra_head %}
+{% endblock %}
+
+{% block content %}
+
+<div id="alert-box"></div>
+<br>
+
+<form id="query-form" action="{% url 'query_builder' %}" method="POST">
+  {% csrf_token %}
+  {{ form.as_p }}
+  <br>
+  <button class="primaryAction" type="submit">{% trans "Query Data" %}</button>
+</form>
+<br>
+
+{% endblock %}

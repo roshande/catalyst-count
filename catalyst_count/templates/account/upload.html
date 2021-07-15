@@ -1,0 +1,31 @@
+{% extends "account/base.html" %}
+
+{% load i18n %}
+
+{% block head_title %}{% trans "Upload Data" %}{% endblock %}
+
+{% block extra_head %}
+{% load static %}
+<script src="{% static 'js/main.js' %}" type="text/javascript"></script>
+<link href="{% static 'css/main.css' %}" rel="stylesheet">
+{% endblock %}
+
+{% block content %}
+
+<div id="alert-box"></div>
+<br>
+
+<form id="upload-form" action="{% url 'upload_file' %}" method="POST" enctype="multipart/form-data">
+  {% csrf_token %}
+  {{ form }}
+  <br>
+  <button class="primaryAction" type="submit">{% trans "Start Upload" %}</button>
+</form>
+<br>
+<div id="progress-box" class="not-visible"></div>
+<div id="cancel-box" class="not-visible">
+  <button id="cancel-btn" class="btn btn-danger">cancel</button>
+</div>
+
+
+{% endblock %}
