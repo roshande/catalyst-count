@@ -1,6 +1,5 @@
 import pandas as pd
 from .models import Companies
-from django_q.tasks import async_task, result
 
 def handle_uploaded_file(uploaded_file):
     csv_data = pd.read_csv(uploaded_file)
@@ -13,7 +12,3 @@ def handle_uploaded_file(uploaded_file):
     csv_data = csv_data.rename(columns=column_renames)
     records = csv_data.to_dict(orient="records")
     Companies.obj.bulk_create(records, 100)
-
-
-
-
