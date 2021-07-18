@@ -1,51 +1,40 @@
-from django.views import View
-from django.http import HttpResponseRedirect
-from django.urls import reverse
-from .uploadhandler import ProgressBarUploadHandler
-from rest_framework.views import APIView
-from rest_framework.response import Response
-from rest_framework import authentication, permissions
-from django_q.tasks import AsyncTask, async_task
+from django.views.generic import FormView
 from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import csrf_exempt, csrf_protect
-from django.shortcuts import render
+from django.urls import reverse
+from .uploadhandler import ProgressBarUploadHandler
 from .forms import UploadFileForm, QueryBuilderForm
 from .file_data_handler import handle_uploaded_file
 
 # Create your views here.
-class UploadFile(View):
 
-    @method_decorator(csrf_exempt)
+
+@method_decorator(csrf_exempt, 'dispatch')
+class UploadFile(FormView):
+    form_class = UploadFileForm
+    template_name = "account/upload.html"
+    success_url = "/data/upload_data/"
+
     def post(self, request):
-        #request.upload_handlers.insert(0, ProgressBarUploadHandler(request))
-        if request.is_ajax():
-            return self._upload_file_view(request)
-        return HttpResponseRedirect()
+        request.upload_handlers.insert(0, ProgressBarUploadHandler(request))
+        return self._upload_file_view(request)
 
     @method_decorator(csrf_protect)
     def _upload_file_view(self, request):
-        form = UploadFileForm(request.POST, request.FILES)
-        if form.is_valid():
-            #task_id = async_task('handle_uploaded_file', request.FILES['file'],
-            #                     hook='',
-            #                     group='file_upload')
-            handle_uploaded_file(request.FILES['file'])
-            return HttpResponseRedirect(reverse('upload-data'))
-        return HttpResponseRedirect(reverse('upload-data'))
-
-    def get(self, request):
-        context = {
-            'form' : UploadFileForm()
-        }
-        return render(request, 'account/upload.html', context)
+        form = self.get_form()
+        print(form.is_valid())
+        if not form.is_valid():
+            print("invalid form")
+            return self.form_invalid(form)
+        uploaded_file = request.FILES.get('file', None)
+        print("uploaded file", uploaded_file)
+        if uploaded_file is None:
+            return reverse("upload_file")
+        handle_uploaded_file(uploaded_file)
+        print("handling of data file completed")
+        return self.form_valid(form)
 
 
-class QueryBuilder(View):
-    def get(self, request):
-        context = {
-            'form' : QueryBuilderForm()
-        }
-        return render(request, 'account/query_builder.html', context)
-
-    def post(self, request, format=None):
-        pass
+class QueryBuilder(FormView):
+    form_class = QueryBuilderForm
+    template_name = "account/query_builder.html"

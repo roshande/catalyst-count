@@ -9,8 +9,9 @@ $(document).ready(function(){
   const cancelBtn = document.getElementById('cancel-btn')
 
   const csrf = document.getElementsByName('csrfmiddlewaretoken')
+  const startUpload = document.getElementById('start-upload-btn')
 
-  input.addEventListener('change', ()=>{
+  startUpload.addEventListener('click', function(){
 	progressBox.classList.remove('not-visible')
 	cancelBox.classList.remove('not-visible')
 
@@ -19,6 +20,7 @@ $(document).ready(function(){
 	const fd = new FormData()
 	fd.append('csrfmiddlewaretoken', csrf[0].value)
 	fd.append('file', file_data)
+	console.log(fd)
 
 	$.ajax({
 	  type: 'POST',
@@ -28,13 +30,16 @@ $(document).ready(function(){
 	  beforeSend: function(){
 		alertBox.innerHTML = ""
 	  },
+	  cache: false,
+	  contentType: false,
+	  processData: false,
 	  xhr: function(){
 		const xhr = new window.XMLHttpRequest();
 		xhr.upload.addEventListener('progress', function(e){
 		  console.log(e)
 		  if(e.lengthComputable){
 			const percent = e.loaded / e.total * 100;
-			console.log(percent)
+			console.log(percent);
 			progressBox.innerHTML = `<div class="progress">
 							  <div class="progress-bar" rolw="progressbar" style="width: ${percent}%" aria-valuenow="${percent}"</div>
 							  <p>${percent.toFixed(1)}%`
@@ -60,9 +65,6 @@ $(document).ready(function(){
 		console.log(error)
 		alertBox.innerHTML = `<div class="alert alert-danger" role="alert"> Oops!! Something went wrong</div>`
 	  },
-	  cache: false,
-	  contentType: false,
-	  processData: false
 	})
   })
 })

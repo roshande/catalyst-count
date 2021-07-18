@@ -33,7 +33,8 @@ DEBUG = env('DEBUG')
 
 
 # SECURITY WARNING: keep the secret key used in production secret!
-# Raises django's ImproperlyConfigured exception if SECRET_KEY not in os.environ
+# Raises django's ImproperlyConfigured exception if SECRET_KEY not in
+# os.environ
 SECRET_KEY = env('SECRET_KEY')
 
 ALLOWED_HOSTS = []
@@ -49,7 +50,9 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'django.contrib.sites',
+    'django_extensions',
     'bootstrapform',
+    'django_q',
     'allauth',
     'allauth.account',
     'allauth.socialaccount',
@@ -71,7 +74,7 @@ ROOT_URLCONF = 'catalyst_count.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [ BASE_DIR / 'templates'],
+        'DIRS': [BASE_DIR / 'templates'],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -86,20 +89,21 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'catalyst_count.wsgi.application'
 
-SITE_ID=1
+SITE_ID = 1
 
 # Database
 # https://docs.djangoproject.com/en/3.2/ref/settings/#databases
 
 # Parse database connection url strings like psql://user:pass@127.0.0.1:8458/db
 DATABASES = {
-    # read os.environ['DATABASE_URL'] and raises ImproperlyConfigured exception if not found
+    # read os.environ['DATABASE_URL'] and raises ImproperlyConfigured exception
+    # if not found
     'default': env.db(),
 }
 
 Q_CLUSTER = {
     'name': 'data_handler',
-    'workers': 8,
+    'workers': 4,
     'recycle': 500,
     'timeout': 60,
     'compress': True,
@@ -107,7 +111,7 @@ Q_CLUSTER = {
     'queue_limit': 500,
     'cpu_affinity': 1,
     'label': 'Django Q',
-    'redis': env('REDIS_URL')
+    'redis': env('REDIS_URL'),
 }
 
 # Password validation
@@ -161,3 +165,5 @@ MEDIA_ROOT = BASE_DIR / 'media'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 LOGIN_REDIRECT_URL = "/data/upload_data/"
+
+FILE_UPLOAD_MAX_MEMORY_SIZE = 5242880 # make it 5Mb instead of 2Mb
