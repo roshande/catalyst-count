@@ -21,6 +21,7 @@ admin.autodiscover()
 
 urlpatterns = [
     path('', TemplateView.as_view(template_name='index.html')),
+    path('auth/', include('rest_framework.urls', namespace='rest_framerwork')),
     path('admin/', admin.site.urls),
     path('accounts/', include('allauth.urls')),
     path('accounts/home', TemplateView.as_view(template_name="home.html")),

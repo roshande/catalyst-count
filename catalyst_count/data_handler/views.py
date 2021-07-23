@@ -1,10 +1,14 @@
+from rest_framework import viewsets
 from django.views.generic import FormView
 from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import csrf_exempt, csrf_protect
 from django.urls import reverse
+
 from .uploadhandler import ProgressBarUploadHandler
 from .forms import UploadFileForm, QueryBuilderForm
 from .file_data_handler import handle_uploaded_file
+from .models import Companies
+from .serializer import CompanySerializer
 
 # Create your views here.
 
@@ -38,3 +42,8 @@ class UploadFile(FormView):
 class QueryBuilder(FormView):
     form_class = QueryBuilderForm
     template_name = "account/query_builder.html"
+
+class CompanyViewSet(viewsets.ModelViewSet):
+    queryset = Companies.objects.all()
+    serializer_class = CompanySerializer
+
